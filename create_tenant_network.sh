@@ -15,6 +15,7 @@ vlan_start=$3
 vlan_end=$4
 
 admin_id=`openstack  project list | grep -i admin | awk '{print $2}'`
+projects=( `openstack project list | grep -i $1  | awk '{print $4}'`)
 
 neutron providernet-range-create --tenant_id  $admin_id --range $vlan_start-$vlan_end --name L3 providerExternal
 
@@ -35,7 +36,7 @@ for i in $(seq 1 $project_count); do
 
 #        tenant_id=`openstack  project list | grep -i admin | awk '{print $2}'`  
 
-	tenant_name=project$i
+	tenant_name=${projects[($i-1)]}
 	tenant_id=$admin_id
 
         for ((incr=$vlan_start ; incr<$vlan_start+4; incr++ ));do
